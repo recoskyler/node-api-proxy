@@ -1,8 +1,8 @@
 import 'dotenv/config';
 import express from 'express';
 import rateLimit from 'express-rate-limit';
-import apiRouter from './routes/index';
-import errorHandler from './middleware/error';
+import apiRouter from './routes/index.js';
+import errorHandler from './middleware/error.js';
 
 const PORT = !process.env.PORT || process.env.PORT.trim() === '' || isNaN(parseInt(process.env.PORT.trim()))
   ? 5000
