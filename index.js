@@ -6,7 +6,11 @@ import errorHandler from './middleware/error';
 
 const PORT = !process.env.PORT || process.env.PORT.trim() === '' || isNaN(parseInt(process.env.PORT.trim()))
   ? 5000
-  : process.env.PORT.trim();
+  : parseInt(process.env.PORT.trim());
+
+const HOST = !process.env.HOST || process.env.HOST.trim() === '' || isNaN(parseInt(process.env.HOST.trim()))
+  ? '127.0.0.1'
+  : process.env.HOST.trim();
 
 if (!process.env.API_KEY || process.env.API_KEY.trim() === '') {
   throw new Error('API_KEY is not set');
@@ -41,4 +45,4 @@ app.use('/', apiRouter);
 // Error handler middleware
 app.use(errorHandler);
 
-app.listen(PORT, () => console.log(`Proxy server running on port ${PORT}`));
+app.listen(PORT, HOST, () => console.log(`Proxy server running on host ${HOST} and port ${PORT}`));
