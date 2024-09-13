@@ -10,7 +10,8 @@
       "API_KEY": "",
       "API_KEY_QUERY_PARAM": "",
       "API_BASE_URL": "",
-      "AUTH_TOKEN": ""
+      "AUTH_TOKEN": "",
+      "HOST": "127.0.0.1"
     },
     "max_memory_restart": "128M",
     "autorestart": true,
