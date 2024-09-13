@@ -40,7 +40,7 @@ app.use(limiter);
 app.set('trust proxy', 1);
 
 // Routes
-app.use('/', apiRouter);
+app.use('/*', apiRouter);
 
 // Error handler middleware
 app.use(errorHandler);
