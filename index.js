@@ -3,6 +3,7 @@ import express from 'express';
 import rateLimit from 'express-rate-limit';
 import apiRouter from './routes/index.js';
 import errorHandler from './middleware/error.js';
+import auth from './middleware/auth.js';
 
 const PORT = !process.env.PORT || process.env.PORT.trim() === '' || isNaN(parseInt(process.env.PORT.trim()))
   ? 5000
@@ -40,7 +41,7 @@ app.use(limiter);
 app.set('trust proxy', 1);
 
 // Routes
-app.use('/*', apiRouter);
+app.use( '/*', auth, apiRouter );
 
 // Error handler middleware
 app.use(errorHandler);
