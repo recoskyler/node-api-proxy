@@ -31,7 +31,9 @@ const router = async (req, res, next) => {
 
       const apiRes = await axios.post( url, body, {
         validateStatus: () => true,
-        headers: req.headers,
+        headers: {
+          'Content-Type': 'application/json',
+        },
       } );
 
       res.status( apiRes.status ).json( apiRes.data );
