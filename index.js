@@ -4,6 +4,7 @@ import rateLimit from 'express-rate-limit';
 import apiRouter from './routes/index.js';
 import errorHandler from './middleware/error.js';
 import auth from './middleware/auth.js';
+import bodyParser from 'body-parser';
 
 const PORT = !process.env.PORT || process.env.PORT.trim() === '' || isNaN(parseInt(process.env.PORT.trim()))
   ? 5000
@@ -39,6 +40,7 @@ const limiter = rateLimit({
 
 app.use(limiter);
 app.set('trust proxy', 1);
+app.use( bodyParser.json() );
 
 // Routes
 app.use( '/*', auth, apiRouter );
