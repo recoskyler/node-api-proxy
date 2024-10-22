@@ -29,12 +29,16 @@ const router = async (req, res, next) => {
         ? JSON.parse( req.body )
         : req.body;
 
+      console.log( { body, jBody: JSON.stringify( body ) } );
+
       const apiRes = await fetch( url, {
         method: 'POST',
         body: JSON.stringify( body ),
       } );
 
       const data = await apiRes.json();
+
+      console.log( { status: apiRes.status, data } );
 
       res.status( apiRes.status ).json( data );
     } else {
