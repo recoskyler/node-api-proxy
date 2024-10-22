@@ -1,5 +1,6 @@
 import needle from 'needle';
 import 'dotenv/config';
+import axios from 'axios';
 
 const API_BASE_URL = process.env.API_BASE_URL ?? '';
 const API_KEY_QUERY_PARAM = process.env.API_KEY_QUERY_PARAM ?? '';
@@ -21,22 +22,17 @@ const router = async (req, res, next) => {
 
     const url = `${API_BASE_URL}/${params}?${query}&${API_KEY_QUERY_PARAM}=${API_KEY}`;
 
-    // Log the request to the public API
-    if (process.env.NODE_ENV !== 'production') {
-      console.log( `${method} - ${hasBody} - REQUEST: ${url}` );
-    }
-
     if ( ( req.method ?? 'get' ).toUpperCase() === 'POST' ) {
-      needle.post( url, req.body, { json: true }, ( error, response ) => {
-        if ( error || ( response.statusCode ?? 0 ) < 200 || ( response.statusCode ?? 500 ) > 300 ) {
-          console.error( 'Error while POSTing', error );
+      console.log( 'POST request to', params, query );
 
-          return next( error );
-        }
-
-        res.status( response.statusCode ?? 200 ).json( response.body );
+      const apiRes = await axios.post( url, req.body, {
+        validateStatus: () => true,
       } );
+
+      res.status( apiRes.status ).json( apiRes.data );
     } else {
+      console.log( method.toUpperCase(), 'request to', params, query );
+
       const apiRes = await needle( method, url, hasBody ? req.body : undefined, hasBody ? { json: true } : undefined );
 
       res.status( apiRes.statusCode ?? 200 ).json( apiRes.body );
