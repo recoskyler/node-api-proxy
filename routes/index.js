@@ -9,10 +9,19 @@ const router = async (req, res, next) => {
   try {
     const query = req.url.split('?').pop();
     const params = req.params[0];
+    const method = {
+      GET: 'get',
+      POST: 'post',
+      PUT: 'put',
+      DELETE: 'delete',
+      PATCH: 'patch',
+      OPTIONS: 'options',
+    }[req.method] ?? 'get';
+    const hasBody = method === 'post' || method === 'put' || method === 'patch';
 
     const url = `${API_BASE_URL}/${params}?${query}&${API_KEY_QUERY_PARAM}=${API_KEY}`;
 
-    const apiRes = await needle('get', url);
+    const apiRes = await needle( method, url, hasBody ? req.body : undefined, hasBody ? { json: true } : undefined );
     const data = apiRes.body;
 
     // Log the request to the public API
@@ -20,7 +29,7 @@ const router = async (req, res, next) => {
       console.log(`REQUEST: ${url}`);
     }
 
-    res.status(200).json(data);
+    res.status( apiRes.statusCode ?? 200 ).json( data );
   } catch (error) {
     next(error);
   }
