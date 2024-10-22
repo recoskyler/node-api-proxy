@@ -29,14 +29,14 @@ const router = async (req, res, next) => {
         ? JSON.parse( req.body )
         : req.body;
 
-      const apiRes = await axios.post( url, body, {
-        validateStatus: () => true,
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      const apiRes = await fetch( url, {
+        method: 'POST',
+        body: JSON.stringify( body ),
       } );
 
-      res.status( apiRes.status ).json( apiRes.data );
+      const data = await apiRes.json();
+
+      res.status( apiRes.status ).json( data );
     } else {
       console.log( method.toUpperCase(), '- request to', params, query );
 
