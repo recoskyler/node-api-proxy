@@ -26,7 +26,7 @@ const router = async (req, res, next) => {
 
     // Log the request to the public API
     if (process.env.NODE_ENV !== 'production') {
-      console.log(`REQUEST: ${url}`);
+      console.log( `${method} - ${hasBody} - REQUEST: ${url}` );
     }
 
     res.status( apiRes.statusCode ?? 200 ).json( data );
