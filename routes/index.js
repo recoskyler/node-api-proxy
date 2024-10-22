@@ -25,8 +25,13 @@ const router = async (req, res, next) => {
     if ( ( req.method ?? 'get' ).toUpperCase() === 'POST' ) {
       console.log( 'POST request to', params, query );
 
-      const apiRes = await axios.post( url, req.body, {
+      const body = typeof req.body === 'string'
+        ? JSON.parse( req.body )
+        : req.body;
+
+      const apiRes = await axios.post( url, body, {
         validateStatus: () => true,
+        headers: req.headers,
       } );
 
       res.status( apiRes.status ).json( apiRes.data );
