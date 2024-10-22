@@ -38,7 +38,7 @@ const router = async (req, res, next) => {
 
       res.status( apiRes.status ).json( apiRes.data );
     } else {
-      console.log( method.toUpperCase(), 'request to', params, query );
+      console.log( method.toUpperCase(), '- request to', params, query );
 
       const apiRes = await needle( method, url, hasBody ? req.body : undefined, hasBody ? { json: true } : undefined );
 
