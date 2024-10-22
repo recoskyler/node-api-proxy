@@ -21,15 +21,26 @@ const router = async (req, res, next) => {
 
     const url = `${API_BASE_URL}/${params}?${query}&${API_KEY_QUERY_PARAM}=${API_KEY}`;
 
-    const apiRes = await needle( method, url, hasBody ? req.body : undefined, hasBody ? { json: true } : undefined );
-    const data = apiRes.body;
-
     // Log the request to the public API
     if (process.env.NODE_ENV !== 'production') {
       console.log( `${method} - ${hasBody} - REQUEST: ${url}` );
     }
 
-    res.status( apiRes.statusCode ?? 200 ).json( data );
+    if ( ( req.method ?? 'get' ).toUpperCase() === 'POST' ) {
+      needle.post( url, req.body, { json: true }, ( error, response ) => {
+        if ( error || ( response.statusCode ?? 0 ) < 200 || ( response.statusCode ?? 500 ) > 300 ) {
+          console.error( 'Error while POSTing', error );
+
+          return next( error );
+        }
+
+        res.status( response.statusCode ?? 200 ).json( response.body );
+      } );
+    } else {
+      const apiRes = await needle( method, url, hasBody ? req.body : undefined, hasBody ? { json: true } : undefined );
+
+      res.status( apiRes.statusCode ?? 200 ).json( apiRes.body );
+    }
   } catch (error) {
     next(error);
   }
