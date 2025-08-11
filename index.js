@@ -62,7 +62,11 @@ app.use(bodyParser.json());
 app.use(
   "/*",
   auth,
-  expressCache({ cache: inMemoryCache, timeOutMins: CACHE_TIMEOUT_MINS }),
+  expressCache({
+    cache: inMemoryCache,
+    timeOutMins: (req) =>
+      req.query.useCache?.trim() === "1" ? CACHE_TIMEOUT_MINS : 1,
+  }),
   apiRouter,
 );
 
