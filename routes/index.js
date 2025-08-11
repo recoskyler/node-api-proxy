@@ -1,9 +1,9 @@
 import needle from "needle";
 import "dotenv/config";
 import axios from "axios";
-import { Request } from "express";
-import { Response } from "express";
-import { NextFunction } from "express";
+import express from "express";
+
+const { Request, Response, NextFunction } = express;
 
 const API_BASE_URL = process.env.API_BASE_URL ?? "";
 const API_KEY_QUERY_PARAM = process.env.API_KEY_QUERY_PARAM ?? "";
