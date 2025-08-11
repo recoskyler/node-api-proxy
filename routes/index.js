@@ -1,52 +1,66 @@
-import needle from 'needle';
-import 'dotenv/config';
-import axios from 'axios';
+import needle from "needle";
+import "dotenv/config";
+import axios from "axios";
+import { Request } from "express";
+import { Response } from "express";
+import { NextFunction } from "express";
 
-const API_BASE_URL = process.env.API_BASE_URL ?? '';
-const API_KEY_QUERY_PARAM = process.env.API_KEY_QUERY_PARAM ?? '';
-const API_KEY = process.env.API_KEY ?? '';
+const API_BASE_URL = process.env.API_BASE_URL ?? "";
+const API_KEY_QUERY_PARAM = process.env.API_KEY_QUERY_PARAM ?? "";
+const API_KEY = process.env.API_KEY ?? "";
 
+/**
+ *
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ */
 const router = async (req, res, next) => {
   try {
-    const query = req.url.split('?').pop();
+    const query = req.url.split("?").pop();
     const params = req.params[0];
-    const method = {
-      GET: 'get',
-      POST: 'post',
-      PUT: 'put',
-      DELETE: 'delete',
-      PATCH: 'patch',
-      OPTIONS: 'options',
-    }[req.method] ?? 'get';
-    const hasBody = method === 'post' || method === 'put' || method === 'patch';
+    const method =
+      {
+        GET: "get",
+        POST: "post",
+        PUT: "put",
+        DELETE: "delete",
+        PATCH: "patch",
+        OPTIONS: "options",
+      }[req.method] ?? "get";
+    const hasBody = method === "post" || method === "put" || method === "patch";
 
     const url = `${API_BASE_URL}/${params}?${query}&${API_KEY_QUERY_PARAM}=${API_KEY}`;
 
-    if ( ( req.method ?? 'get' ).toUpperCase() === 'POST' ) {
-      console.log( 'POST request to', params, query );
+    if ((req.method ?? "get").toUpperCase() === "POST") {
+      console.log("POST request to", params, query);
 
-      const body = typeof req.body === 'string'
-        ? JSON.parse( req.body )
-        : req.body;
+      const body =
+        typeof req.body === "string" ? JSON.parse(req.body) : req.body;
 
-      console.log( { body, jBody: JSON.stringify( body ) } );
+      console.log({ body, jBody: JSON.stringify(body) });
 
-      const apiRes = await fetch( url, {
-        method: 'POST',
-        body: JSON.stringify( body ),
-      } );
+      const apiRes = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify(body),
+      });
 
       const data = await apiRes.json();
 
-      console.log( { status: apiRes.status, data } );
+      console.log({ status: apiRes.status, data });
 
-      res.status( apiRes.status ).json( data );
+      res.status(apiRes.status).json(data);
     } else {
-      console.log( method.toUpperCase(), '- request to', params, query );
+      console.log(method.toUpperCase(), "- request to", params, query);
 
-      const apiRes = await needle( method, url, hasBody ? req.body : undefined, hasBody ? { json: true } : undefined );
+      const apiRes = await needle(
+        method,
+        url,
+        hasBody ? req.body : undefined,
+        hasBody ? { json: true } : undefined,
+      );
 
-      res.status( apiRes.statusCode ?? 200 ).json( apiRes.body );
+      res.status(apiRes.statusCode ?? 200).json(apiRes.body);
     }
   } catch (error) {
     next(error);
